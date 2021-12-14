@@ -10,7 +10,6 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private float speed;
     private Vector3 tmpTarget;
     private int targetIndex;
-    [SerializeField] Transform anchorObject;
 
 
     // Start is called before the first frame update
@@ -73,5 +72,27 @@ public class MovingPlatform : MonoBehaviour
             other.transform.SetParent(null);
         }
     }
+
+
+    
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Player"))
+        {
+            collision.transform.SetParent(transform);
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.CompareTag("Player"))
+        {
+            collision.transform.SetParent(null);
+        }
+    }
+
+   
 
 }
