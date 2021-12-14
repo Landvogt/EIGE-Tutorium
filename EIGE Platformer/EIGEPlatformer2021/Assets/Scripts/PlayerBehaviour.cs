@@ -3,7 +3,7 @@ using System.Collections;
 
 //RequirementComponent adds the type of component to the gameobject when the script is added to it
 //This is handy to ensure required components for scripts
-[RequireComponent (typeof (Rigidbody))]
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerBehaviour : MonoBehaviour
 {
     //We create two Sub-classes to make handling MoveSettings and InputSettings more practical.
@@ -39,7 +39,7 @@ public class PlayerBehaviour : MonoBehaviour
     private Vector3 velocity;
     private Quaternion targetRotation;
     private float forwardInput, sidewaysInput, turnInput, jumpInput;
-
+    [SerializeField] private Transform spawnPoint;
 
     // Sets all the start values
     // Check https://docs.unity3d.com/Manual/ExecutionOrder.html to read up on Unity function execution order
@@ -63,6 +63,7 @@ public class PlayerBehaviour : MonoBehaviour
     // FixedUpdate() is generally used for RigidBody movement because physics are only executed in fixed time steps
     void FixedUpdate()
     {
+        //playerRigidbody.AddForce(Vector3.down * 10);
         Run();
         Jump();
     }
@@ -117,7 +118,7 @@ public class PlayerBehaviour : MonoBehaviour
             //Rotation angle: rotationSpeed * mouse x input * frame scale
             //Rotation axis: up because y world axis, spins around y
             targetRotation *= Quaternion.AngleAxis(
-                moveSettings.rotateVelocity * turnInput * Time.deltaTime, 
+                moveSettings.rotateVelocity * turnInput * Time.deltaTime,
                 Vector3.up);
         }
         //apply rotation to player transform
@@ -136,8 +137,8 @@ public class PlayerBehaviour : MonoBehaviour
             //defined jumpVelocity, dont alter the other values,
             //apply it to the rigidbody velocity
             playerRigidbody.velocity = new Vector3(
-                playerRigidbody.velocity.x, 
-                moveSettings.jumpVelocity, 
+                playerRigidbody.velocity.x,
+                moveSettings.jumpVelocity,
                 playerRigidbody.velocity.z);
         }
     }
@@ -145,13 +146,63 @@ public class PlayerBehaviour : MonoBehaviour
     bool Grounded()
     {
         //The next line is used to visualize a raycast in the editor scene view. Uncomment to display it.
-        //Debug.DrawLine(transform.position, transform.position + Vector3.down * moveSettings.distanceToGround);
+        Debug.DrawLine(transform.position, transform.position + Vector3.down * moveSettings.distanceToGround, Color.magenta);
+        Debug.DrawLine(Vector3.zero, new Vector3(0,1,0),Color.magenta,5);
         //Raycast: start position, shoot direction, raycast ray shoot length, collision Layermask
         //LayerMask is used to only collide the raycast with objects marked with this LayerMask
         return Physics.Raycast(
-            transform.position, 
-            Vector3.down, 
-            moveSettings.distanceToGround, 
+            transform.position,
+            Vector3.down,
+            moveSettings.distanceToGround,
             moveSettings.ground);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("DeathZone"))
+        {
+            Spawn();
+        }
+    }
+
+    void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag == "Enemy")
+        {
+            Bomb bomb = other.gameObject.GetComponent<Bomb>();
+            Collider col = other.gameObject.GetComponent<Collider>();
+            Collider mycol = this.gameObject.GetComponent<Collider>();
+            if (bomb.invincible)
+            {
+                OnDeath();
+            }
+            else if (mycol.bounds.center.y - mycol.bounds.extents.y > col.bounds.center.y + 0.5f * col.bounds.extents.y)
+            {
+                GameData.Instance.Score += 9001;
+                JumpedOnEnemy(bomb.bumpSpeed);
+                bomb.OnDeath();
+            }
+            else
+            {
+                OnDeath();
+            }
+        }
+    }
+
+    private void Spawn()
+    {
+        transform.position = spawnPoint.position;
+        playerRigidbody.velocity = Vector3.zero;
+    }
+
+    void OnDeath()
+    {
+        Spawn();
+    }
+
+    void JumpedOnEnemy(float bumpSpeed)
+    {
+        playerRigidbody.velocity = new Vector3(playerRigidbody.velocity.x, bumpSpeed, playerRigidbody.velocity.z);
+    }
+
 }
