@@ -57,21 +57,7 @@ public class MovingPlatform : MonoBehaviour
     //    }
     //}
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            other.transform.SetParent(anchorObject);
-        }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            other.transform.SetParent(null);
-        }
-    }
 
 
     

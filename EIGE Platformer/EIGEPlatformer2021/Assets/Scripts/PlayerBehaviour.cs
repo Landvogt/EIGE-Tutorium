@@ -41,7 +41,6 @@ public class PlayerBehaviour : MonoBehaviour
     private Quaternion targetRotation;
     private float forwardInput, sidewaysInput, turnInput, jumpInput;
     private Vector3 initialScale;
-    [SerializeField] private Transform spawnPoint;
 
     // Sets all the start values
     // Check https://docs.unity3d.com/Manual/ExecutionOrder.html to read up on Unity function execution order
