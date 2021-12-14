@@ -4,52 +4,74 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private Transform startTransform;
-    [SerializeField] private Transform endTransform;
-    private Vector3 startPos;
-    private Vector3 endPos;
-    public Transform[] tranformArray;
 
-    public Transform nextTransform;
+    public Transform[] trackingPointArray;
+
+    [SerializeField] private float speed;
+    private Vector3 tmpTarget;
+    private int targetIndex;
+    [SerializeField] Transform anchorObject;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        startPos = startTransform.position;
-        endPos = endTransform.position;
-        transform.position = startPos;
+        //sets initial platform position to position of first tracking point
+        transform.position = trackingPointArray[0].position;
+        //sets next target index on the second target point
+        //(target array always must have at least 2 tracking points)
+        targetIndex = 1;
+        //setting target Vec3 for next destination
+        tmpTarget = trackingPointArray[targetIndex].position;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        ////constant platform travel speed
-        //float amtToMove = speed * Time.deltaTime;
-        ////direction from current platform position to next travel Position (Look up vectors between points)
-        //Vector3 direction = (nextTransform.position - transform.position).normalized;
-        ////apply movement
-        //transform.Translate(direction * speed);
-        ////When platform is very close to target transform, change target of nextTransform
-        //if (Vector3.Distance(transform.position, nextTransform.position) <= 0.01)
-        //{
-        //    //TODO: Update next target transform
-        //    nextTransform= ...
-        //}
-        //transform.Translate(new Vector3(0, amtToMove, 0));
-
-
-        float x = Time.time *speed;
-        float sin = Mathf.Sin(x);
-        float t = (sin / 2) + 0.5f;
-        Vector3 pos = Vector3.Lerp(startPos, endPos, t);
-        transform.position = pos;
-
-        //type "for"....enter.....tab (Visual Studio)
-        //for (int i = 0; i < length; i++)
-        //{
-
-        //}
+        //platform speed
+        float amtToMove = speed * Time.deltaTime;
+        //platform travel direction
+        Vector3 direction = (tmpTarget - transform.position).normalized;
+        //apply movement
+        transform.Translate(direction * amtToMove);
+        //change target once closeness threshold is met
+        if (Vector3.Distance(transform.position, tmpTarget) <= 0.1f)
+        {
+            targetIndex = (++targetIndex) % trackingPointArray.Length;
+            tmpTarget = trackingPointArray[targetIndex].position;
+        }
     }
+
+
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.collider.CompareTag("Player"))
+    //    {
+    //        collision.transform.SetParent(anchorObject);
+    //    }
+    //}
+
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    if (collision.collider.CompareTag("Player"))
+    //    {
+    //        collision.transform.SetParent(null);
+    //    }
+    //}
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            other.transform.SetParent(anchorObject);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            other.transform.SetParent(null);
+        }
+    }
+
 }

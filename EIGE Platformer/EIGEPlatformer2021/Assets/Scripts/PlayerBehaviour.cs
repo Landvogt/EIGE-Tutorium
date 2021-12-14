@@ -35,16 +35,19 @@ public class PlayerBehaviour : MonoBehaviour
     public MoveSettings moveSettings;
     public InputSettings inputSettings;
 
+    [SerializeField] private Transform spawnPoint;
     private Rigidbody playerRigidbody;
     private Vector3 velocity;
     private Quaternion targetRotation;
     private float forwardInput, sidewaysInput, turnInput, jumpInput;
+    private Vector3 initialScale;
 
 
     // Sets all the start values
     // Check https://docs.unity3d.com/Manual/ExecutionOrder.html to read up on Unity function execution order
     void Awake()
     {
+        initialScale = transform.localScale;
         velocity = Vector3.zero;
         forwardInput = sidewaysInput = turnInput = jumpInput = 0;
         targetRotation = transform.rotation;
@@ -153,5 +156,49 @@ public class PlayerBehaviour : MonoBehaviour
             Vector3.down, 
             moveSettings.distanceToGround, 
             moveSettings.ground);
+    }
+
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.CompareTag("DeathZone"))
+    //    {
+    //        Spawn();
+    //    }
+    //    if (other.CompareTag("Platform"))
+    //    {
+    //        transform.SetParent(other.transform, true);
+    //        Debug.Log("Parenting");
+    //    }
+    //}
+
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.CompareTag("Platform"))
+    //    {
+    //        transform.SetParent(null, true);
+    //        //transform.localScale = initialScale;
+    //        Debug.Log("Unparenting");
+    //    }
+    //}
+
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.collider.CompareTag("Platform"))
+    //    {
+    //        transform.SetParent(collision.transform,true);
+    //    }
+    //}
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    if (collision.collider.CompareTag("Platform"))
+    //    {
+    //        transform.SetParent(null, true);
+    //    }
+    //}
+
+    void Spawn()
+    {
+        transform.position = spawnPoint.position;
+        playerRigidbody.velocity = Vector3.zero;
     }
 }
