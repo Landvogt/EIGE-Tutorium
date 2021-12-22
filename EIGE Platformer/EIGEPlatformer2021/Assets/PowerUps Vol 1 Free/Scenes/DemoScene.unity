@@ -584,7 +584,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4b75b9985c0a94b43a0719aba266c092, type: 2}
+  - {fileID: 2100000, guid: 0457838f66c92c34db83537dfded38c0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1631,6 +1631,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2386332, guid: a633cb56034281d4e874e56c353dedf8, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6a4aab7049b3a1147b8cc6ced7c901e3, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a633cb56034281d4e874e56c353dedf8, type: 3}
 --- !u!1001 &1950708883

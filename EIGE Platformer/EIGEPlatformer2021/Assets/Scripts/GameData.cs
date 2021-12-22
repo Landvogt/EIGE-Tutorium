@@ -1,4 +1,4 @@
-public class GameData 
+public class GameData
 {
     private static GameData instance;
     public int test { get; set; }

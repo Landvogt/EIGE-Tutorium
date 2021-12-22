@@ -203,11 +203,15 @@ public class PlayerBehaviour : MonoBehaviour
         {
             Spawn();
         }
+        if (other.gameObject.CompareTag("Checkpoint"))
+        {
+            spawnPoint = other.gameObject.transform;
+        }
     }
 
     void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Enemy")
+        if (other.gameObject.CompareTag("Enemy"))
         {
             Bomb bomb = other.gameObject.GetComponent<Bomb>();
             Collider col = other.gameObject.GetComponent<Collider>();

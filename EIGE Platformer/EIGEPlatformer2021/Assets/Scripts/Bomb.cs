@@ -18,14 +18,12 @@ public class Bomb : MonoBehaviour
     }
     void FixedUpdate()
     {
-        rb.velocity = new
-        Vector3(speed, rb.velocity.y, 0);
+        rb.velocity = new Vector3(speed, rb.velocity.y, 0);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag ==
-        "End")
+        if (other.gameObject.CompareTag("End"))
         {
             speed *= -1;
         }

@@ -243,4 +243,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2
   invincible: 0
-  bumpSpeed: 20
+  bumpSpeed: 3
